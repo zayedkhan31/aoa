@@ -76,7 +76,7 @@ There are three possible cases to consider:
 *  **Deleting a node with two children**: Call the node to be deleted N. Do not delete N. Instead, choose either its in-order successor node or its in-order predecessor node, R. Replace the value of N with the value of R, then delete R.
 
 
-[When both elements exists](http://upload.wikimedia.org/wikipedia/commons/4/46/Binary_search_tree_delete.svg)
+![ALT When both elements exists](http://upload.wikimedia.org/wikipedia/commons/4/46/Binary_search_tree_delete.svg)
 
 ####Psuedo Code
 
