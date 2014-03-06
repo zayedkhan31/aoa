@@ -1,0 +1,36 @@
+The algorithm is similar to the algorithm for unweighted graphs.
+
+Differences:
+
+The adjacency lists contain in addition the weights of the edges
+Instead of ordinary queue, a priority queue is used (the distances being the priorities) 
+and the vertex with the smallest distance is selected for processing
+The distance to a vertex is measured by the sum of the weights of the edges that constitute the path from the source vertex.
+Distances are subjected to adjustments - in case the newly computed distance is smaller.
+Algorithm:
+
+Store s in a priority queue with priority 0 and set distance to s to be 0 in the Distance Table. 
+Initialize the distances to all other vertices as "not computed", 
+e.g. using a sentinel value -1.
+While there are vertices in the queue:
+DeleteMin a vertex v from the queue
+For all adjacent vertices w do:
+Compute new distance d= (distance to v) + weight(v,w)
+If old distance (the distance stored in the Distance Table) is -1 
+(not computed) do:
+store new distance d in Distance Table
+insert w in the priority queue with priority d
+store path = v
+If old distance > new distance d
+Update old distance = new distance d
+Update priority of vertex w to be d
+(this is done by updating the priority of an element in the queue - decreaseKey operation. Complexity O(log|V|))
+Update path to w to be v
+Complexity: O(|E|log|V| + |V|log|V|) = O((|E| + |V|)log(|V|))
+
+Each vertex is stored only once in the queue - max elements = |V|
+
+The deleteMin operation is O( |V|log|V| )
+
+The decreaseKey operation is O(log|V|) (a search in the binary heap). 
+It might be performed for each examined edge - O(|E|log|V|).
