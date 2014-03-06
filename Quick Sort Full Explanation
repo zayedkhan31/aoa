@@ -1,0 +1,164 @@
+Features
+Similar to mergesort - divide-and-conquer recursive algorithm
+One of the fastest sorting algorithms
+Average running time O(NlogN)
+Worst-case running time O(N2)
+
+
+Basic idea
+Pick one element in the array, which will be the pivot.
+Make one pass through the array, called a partition step, re-arranging the entries so that:
+the pivot is in its proper place.
+entries smaller than the pivot are to the left of the pivot.
+entries larger than the pivot are to its right.
+Recursively apply quicksort to the part of the array that is to the left of the pivot, 
+and to the right part of the array.
+Here we don't have the merge step, at the end all the elements are in the proper order.
+
+
+Algorithm
+STEP 1. Choosing the pivot
+
+Choosing the pivot is an essential step. 
+Depending on the pivot the algorithm may run very fast, or in quadric time.:
+
+Some fixed element: e.g. the first, the last, the one in the middle
+This is a bad choice - the pivot may turn to be the smallest or the largest element, 
+then one of the partitions will be empty.
+
+Randomly chosen (by random generator ) - still a bad choice.
+The median of the array (if the array has N numbers, the median is the [N/2] largest number. This is difficult to compute - increases the complexity.
+The median-of-three choice: take the first, the last and the middle element. 
+Choose the median of these three elements.
+Example:
+
+8, 3, 25, 6, 10, 17, 1, 2, 18, 5
+
+The first element is 8, the middle - 10, the last - 5.
+The median of [8, 10, 5] is 8
+
+STEP 2. Partitioning
+
+Partitioning is illustrated on the above example.
+
+1. The first action is to get the pivot out of the way - swap it with the last element
+
+5, 3, 25, 6, 10, 17, 1, 2, 18, 8
+
+2. We want larger elements to go to the right and smaller elements to go to the left.
+
+Two "fingers" are used to scan the elements from left to right and from right to left:
+
+
+[5, 3, 25, 6, 10, 17, 1, 2, 18, 8]
+ ^                              ^
+ i                              j
+While i is to the left of j, we move i right, skipping all the elements 
+less than the pivot. If an element is found greater then the pivot, i stops
+While j is to the right of i, we move j left, skipping all the elements 
+greater than the pivot. If an element is found less then the pivot, j stops
+When both i and j have stopped, the elements are swapped.
+When i and j have crossed, no swap is performed, scanning stops, 
+and the element pointed to by i is swapped with the pivot .
+In the example the first swapping will be between 25 and 2, the second between 10 and 1.
+
+3. Restore the pivot.
+
+After restoring the pivot we obtain the following partitioning into three groups:
+
+[5, 3, 2, 6, 1] [ 8 ] [10, 25, 18, 17]
+
+STEP 3. Recursively quicksort the left and the right parts
+
+
+Code
+Here is the code, that implements the partitioning.
+left points to the first element in the array currently processed, right points to the last element.
+
+
+if( left + 10 <= right)
+    {
+	int i = left, j = right - 1;
+	for ( ; ; )
+	  {
+	    while (a[++i] < pivot  ) {}   // move the left finger
+	    while (pivot  < a[--j] ) {}	  // move the right finger
+
+	    if (i < j) swap (a[i],a[j]);  // swap	
+            else  break;		  // break if fingers have crossed
+          }
+       swap (a[I], a[right-1);		  // restore the pivot
+       quicksort ( a, left, i-1);	  // call quicksort for the left part
+       quicksort (a, i+1, right);	  // call quicksort for the left part
+     }
+else  insertionsort (a, left, right);
+
+If the elements are less than 10, quicksort is not very efficient. 
+Instead insertion sort is used at the last phase of sorting.
+
+Click here to see the above example worked out in details
+
+Animations:
+http://math.hws.edu/TMCM/java/xSortLab/
+http://students.ceid.upatras.gr/~pirot/java/Quicksort/
+
+Implementation notes
+Compare the two versions:
+
+
+A.
+	while (a[++i] < pivot) {}
+	while (pivot < a[--j]) {}
+
+	if (i < j) swap (a[i], a[j]);
+	else break;
+
+B.
+
+	while (a[i] < pivot) {i++;}
+	while (pivot < a[j] ) {j--;}
+
+	if (i < j) swap (a[i], a[j]);
+	else break;
+If we have an array of equal elements, the second code will never increment i or decrement j, 
+and will do infinite swaps. i and j will never cross.
+
+
+Complexity of Quicksort
+Worst-case: O(N2)
+This happens when the pivot is the smallest (or the largest) element. 
+Then one of the partitions is empty, and we repeat recursively the procedure for N-1 elements.
+Best-case O(NlogN) The best case is when the pivot is the median of the array, 
+and then the left and the right part will have same size.
+
+There are logN partitions, and to obtain each partitions we do N comparisons 
+(and not more than N/2 swaps). Hence the complexity is O(NlogN)
+
+Average-case - O(NlogN)
+
+
+Conclusions
+Advantages:
+
+One of the fastest algorithms on average.
+Does not need additional memory (the sorting takes place in the array - this is called in-place processing). Compare with mergesort: mergesort needs additional memory for merging.
+Disadvantages: The worst-case complexity is O(N2)
+
+Applications:
+
+Commercial applications use Quicksort - generally it runs fast, no additional memory, 
+this compensates for the rare occasions when it runs with O(N2)
+
+Never use in applications which require guaranteed response time:
+Life-critical (medical monitoring, life support in aircraft and space craft)
+Mission-critical (monitoring and control in industrial and research plants 
+handling dangerous materials, control for aircraft, defense, etc)
+unless you assume the worst-case response time.
+Comparison with mergesort:
+
+mergesort guarantees O(NlogN) time, however it requires additional memory with size N.
+quicksort does not require additional memory, however the speed is not quaranteed
+usually mergesort is not used for main memory sorting, only for external memory sorting.
+So far, our best sorting algorithm has O(nlog n) performance: can we do any better?
+
+In general, the answer is no.
