@@ -1,0 +1,46 @@
+Kruskal's algorithm works with tree forests and the set of edges.
+
+Algorithm:
+
+Initially we build V trees consisting of one vertex only - each vertex is a tree of its own.
+The edges are stored in a priority queue with priority - the weight.
+While the number of distinct trees is greater than one:
+DeleteMin an edge (u,v) from the priority queue.
+If u and v belong to one and the same tree, do nothing.
+If u and v belong to different trees, link the trees by the edge
+Implementation
+
+The algorithm is implemented using operations on disjoint sets. 
+All the vertices are grouped into sets corresponding to the currently built trees. 
+Since each vertex appears in one tree only, the sets are disjoint.
+
+Two set operations are used:
+
+comparison:
+Each vertex is associated with the disjoint set where it belongs. 
+To find out whether two vertices are in the same tree, 
+we need to find out if their disjoint sets are the same.
+
+union:
+When we link the trees, the combine the two disjoint sets to form one set
+- corresponding to the new tree
+
+Complexity of Kruskal's algorithm:
+
+O(V) + O(Elog(E)) + O(Elog(V)).
+
+We need O(V) operations to build the initial forest with V trees each containing one node.
+
+The edges are stored in a priority queue and each time the smallest edge is retrieved, hence we need O(Elog(E)) operations to process the edges.
+
+Finally, the disjoint set operations are implemented by a tree with V nodes, 
+
+hence we need O(Elog(V)) operations (a comparison is performed for each edge in the worst case).
+
+Disregarding the lower term O(V) we get O(E(log(V) + log(E)).
+
+At the worst case E = O(V2). Hence log(E) = O(log(V2)) = O(2log(V)) = O(log(V).
+
+Thus we get complexity O(Elog(V)).
+
+On the other hand, V = O(E), hence we can reduce the complexity expression to O(Elog(E)).
