@@ -79,15 +79,21 @@ void add_edge(Graph *g, int i, int j, int w) {
     g->edges[i][j] = w;
     g->edges[j][i] = w;
 }
+
 /*
 void main() {
     int i, j;
     Graph *g;
     g = init_graph(10);
-    display(g);
-    for(i = 0; i < g->size; i++)
-        for(j = 0; j < g->size; j++)
-            remove_edge(g, i, j);
-    display(g);
+    graph_display(g);
+    for(i = 0; i < g->size; i++) {
+        for(j = i+1; j < g->size; j++) {
+            if((int) rand() % 10 > 5) continue;
+            add_edge(g, i, j, (int) rand() % 100);
+        }
+    }
+    printf("\n");
+    printf("\n");
+    graph_display(g);
 }
 */

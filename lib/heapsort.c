@@ -1,6 +1,8 @@
 #include<stdio.h>
 #include<stdlib.h>
-/*#include "data.c"*/
+#ifndef DATA_TYPE
+#include "data.c"
+#endif
 
 typedef struct _heap {
     datatype **nodes;
@@ -13,6 +15,7 @@ Heap *create_heap(int length){
     heap->nodes = malloc(length * sizeof(datatype *));
     heap->length = length;
     heap->heapsize = 0;
+    return heap;
 }
 
 int parent(int i) {
@@ -49,7 +52,7 @@ void min_heapify(Heap *heap, int i) {
     }
 }
 
-void insert(Heap *heap, int key, int data) {
+void insert(Heap *heap, datatype *data) {
     int temp, j, i, len, size;
     datatype **nodes, *node;
     if (heap->length < (heap->heapsize + 1)){
@@ -63,8 +66,12 @@ void insert(Heap *heap, int key, int data) {
         heap->length = len;
     }
     node = (datatype *) malloc(sizeof(datatype));
-    node->key = key;
-    node->data = data;
+    node->key = data->key;
+    node->data = data->data;
+    node->v11 = data->v11;
+    node->v12 = data->v12;
+    node->v21 = data->v21;
+    node->v22 = data->v22;
     heap->nodes[heap->heapsize] = node;
     i = heap->heapsize;
     heap->heapsize++;
@@ -76,14 +83,19 @@ void insert(Heap *heap, int key, int data) {
     }
 }
 
-int extract_min(Heap *heap, int *data) {
+int extract_min(Heap *heap, datatype *data) {
     int min, d;
     if(heap->heapsize <= 0) {
         printf("Heap empty\n");
         return 0;
     }
     min = heap->nodes[0]->key;
-    *data = heap->nodes[0]->data;
+    data->key = heap->nodes[0]->key;
+    data->data = heap->nodes[0]->data;
+    data->v11 = heap->nodes[0]->v11;
+    data->v12 = heap->nodes[0]->v12;
+    data->v21 = heap->nodes[0]->v21;
+    data->v22 = heap->nodes[0]->v22;
     heap->nodes[0] = heap->nodes[heap->heapsize - 1];
     heap->nodes[heap->heapsize - 1] = NULL;
     heap->heapsize--;
@@ -137,11 +149,18 @@ void display(Heap *heap) {
 /*
 void main() {
     int i, min;
-    void *data;
     Heap *heap = create_heap(10);
+    datatype *d;
     for(i = 0; i < 20; i++) {
-        data = (void *) malloc(sizeof(void *));
-        insert(heap, 20 - i, data);
+        d = (datatype *) malloc(sizeof(datatype));
+        d->key = 20 - i;
+        d->data = 10;
+        d->v11 = 11;
+        d->v12 = 12;
+        d->v21 = 21;
+        d->v22 = 22;
+        insert(heap, d);
+        free(d);
     }
     small_display(heap); 
     //printf("Sorting again\n");
@@ -149,9 +168,11 @@ void main() {
     small_display(heap); 
     while(heap->heapsize > 0) {
         printf("Getting min\n");
-        min = extract_min(heap, data);
-        printf("Min :%d {%d}\n", min, (int) data);
+        d = (datatype *) malloc(sizeof(datatype));
+        min = extract_min(heap, d);
+        printf("Min :%d {%d}\n", min, d->key);
         small_display(heap); 
+        free(d);
     }
-} 
+}
 */

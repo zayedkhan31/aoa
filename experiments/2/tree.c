@@ -1,7 +1,10 @@
-#include "data.c"
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef int DT;
 
 typedef struct binary_tree_node {
-    datatype data;
+    DT data;
     struct binary_tree_node *left;
     struct binary_tree_node *right;
 } Node;
@@ -15,7 +18,10 @@ Node *create_node(int value) {
 }
 
 Node *add(Node *root, int data) {
-    if (root->data < data) {
+    if (root->data == data) {
+        return;
+    }
+    else if (root->data < data) {
         if(root->right == NULL) {
             root->right = create_node(data);
             return root->right;
@@ -33,7 +39,7 @@ Node *add(Node *root, int data) {
 
 Node *search(Node *root, int data) {
     if (root == NULL) {
-        printf("Not found\n");
+        //printf("Not found\n");
         return NULL;
     }
     if (root->data < data) {
@@ -67,17 +73,15 @@ void print(Node *root) {
 }
 
 void clean(Node *node) {
-    printf("Begin Cleaning...");
     node->left = NULL;
     node->right = NULL;
     free((void *) node);
-    printf("End Cleaning...\n");
 }
 
 void destory(Node *root) {
     destory(root->left);
     destory(root->right);
-    free((void *) root);
+    clean((void *) root);
 }
 
 Node *delete(Node *root, int data) {
@@ -97,7 +101,7 @@ Node *delete(Node *root, int data) {
         else
             temp = temp->right;
     }
-    if (temp->data == data) {
+    if (temp != NULL && temp->data == data) {
         node = temp;
         parent = temp2;
     }
@@ -161,6 +165,7 @@ Node *delete(Node *root, int data) {
     return root;
 }
 
+/*
 void main() {
     int i, val, count=0; 
     int arr[10], completed[10];
@@ -185,4 +190,4 @@ void main() {
     }
     print(root);
 }
-
+*/

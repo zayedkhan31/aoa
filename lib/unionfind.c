@@ -3,6 +3,7 @@
 
 typedef struct {
     int *keys;
+    int *ranks;
     int size;
 } UnionFind;
 
@@ -11,38 +12,53 @@ UnionFind *UF_create(int *keys, int size) {
     int i;
     UnionFind *uf = (UnionFind *) malloc(sizeof(UnionFind));
     uf->keys = (int *) malloc(size * sizeof(int));
+    uf->ranks = (int *) malloc(size * sizeof(int));
     uf->size = size;
     for(i = 0; i < size; i++) {
         uf->keys[i] = keys[i];
+        uf->ranks[i] = 0;
     }
     return uf;
 }
 
-void uf_connect(UnionFind *uf, int i, int j) {
-    int k = 0;
-    if (i >= uf->size || j >= uf->size) {
-        printf("i and j out of bounds\n");
-        return;
+int Find(UnionFind *uf, int i) {
+    if (i >= uf->size) {
+        printf("i is out of bounds\n");
+        return -1;
     }
-    for(k = 0; k < uf->size; k++) {
-        if (uf->keys[k] == uf->keys[j]) {
-            uf->keys[k] = uf->keys[i];
-        }
+    if (uf->keys[i] != i)
+        uf->keys[i] = Find(uf, uf->keys[i]);
+    return uf->keys[i];
+}
+
+void Union(UnionFind *uf, int i, int j) {
+    int i_root, j_root;
+    i_root = Find(uf, i);
+    j_root = Find(uf, j);
+    if (i_root == j_root) return;
+
+    if (uf->ranks[i_root] < uf->ranks[j_root])
+        uf->keys[i_root] = j_root;
+    else if (uf->ranks[i_root] > uf->ranks[j_root])
+        uf->keys[j_root] = i_root;
+    else {
+        uf->keys[j_root] = i_root;
+        uf->ranks[i_root] += 1;
     }
+
 }
 
 int uf_is_connected(UnionFind *uf, int i, int j){
-    if (i >= uf->size || j >= uf->size) {
-        printf("i and j out of bounds\n");
-        return -1;
-    }
-    return uf->keys[i] == uf->keys[j];
+    int i_root, j_root;
+    i_root = Find(uf, i);
+    j_root = Find(uf, j);
+    return i_root == j_root;
 }
 
 void uf_display(UnionFind *uf) {
     int i;
     for(i = 0; i < uf->size; i++) 
-        printf("%d ", uf->keys[i]);
+        printf("%d:[%d, %d], ", i, uf->keys[i], uf->ranks[i]);
     printf("\n");
 }
 
@@ -58,7 +74,7 @@ void main() {
             if (i == j) continue;
             if((int) rand() % 10 < 7) continue;
             printf("Connecting %d %d,\t", i, j);
-            uf_connect(uf, i, j);
+            Union(uf, i, j);
             uf_display(uf);
         }
     for(i = 0; i < uf->size; i++)
