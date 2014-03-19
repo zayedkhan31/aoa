@@ -4,37 +4,43 @@ import random, sys
 source = 0
 
 def generate_data():
-    vertexes = [i for i in range(10)]
+    vertexes = [i for i in range(5)]
     cost = [[0 for j in vertexes] for i in vertexes]
     
     for i in xrange(0, len(cost)):
         cost[i][i] = 0
         for j in xrange(i + 1, len(cost)):
-            cost[i][j] = cost[j][i] = random.randint(1, 10)
+            if random.randint(0, 10) > 5: continue
+            r = random.randint(1, 10)
+            cost[i][j] = r 
+            cost[j][i] = r
     return vertexes, cost
 
 def dijkstra(source, vertex, cost):
     dist = {}
     previous = {}
+    visited = set([])
     dist[source] = 0
     pq = PQ()
     for v in vertex:
         if v is not source:
             dist[v] = sys.maxint 
-            previous[v] = None
+        previous[v] = None
         pq.offer(dist[v], v)
 
     while not pq.is_empty():
         x, u = pq.take() 
         for v in xrange(0, len(cost[u])):
-            if cost[u][v] == 0:
-                continue
+            if cost[u][v] == 0 or (u, v,) in visited or (v, u,) in visited:
+                continue 
+            visited.add((u, v,))
             alt = dist[u] + cost[u][v]
+
+            print "Checking %d: %d {%d}[%d, %d, %d]" % (u, v, alt, dist[u], dist[v], cost[u][v])
             if alt < dist[v]:
-                old_value = dist[v]
+                pq.decrease_key(dist[v], alt, v)
                 dist[v] = alt 
                 previous[v] = u 
-                pq.decrease_key(old_value, alt, v)
     return previous 
 
 
